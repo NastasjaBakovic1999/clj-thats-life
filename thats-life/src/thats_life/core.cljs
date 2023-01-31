@@ -14,6 +14,9 @@
                 "images/pawn-red.svg"
                 "images/pawn-yellow.svg" ])
 
+(defn pawn-render [n]
+  [:pawn.img {:src (get pawn-imgs (inc n))}])
+
 (defn game-render []
   (let [state @game-state]
     [:div 

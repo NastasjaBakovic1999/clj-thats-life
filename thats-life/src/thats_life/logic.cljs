@@ -3,5 +3,24 @@
 (def init-players
   {:players []})
 
+(def fields
+  (concat
+   (range -1 -9 -1)
+   (repeat 6 0)
+   (range 1 9)
+   (range -1 -11 -1)))
+
+(def init-path
+  (vec fields))
+
 (defn is-valid? [state]
   (contains? state :players))
+
+(def guard -1)
+(def is-guard? (partial = guard))
+
+(defn roll-dice
+  (inc (rand-int 6)))
+
+(defn initial-pawns [num-of-players]
+  (nth [3 3 3 2 2] (- num-of-players 2)))
