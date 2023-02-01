@@ -51,3 +51,5 @@
 
 (defn restart [game-state]
   (start {:players (get game-state :players)}))
+
+(defn move [state from pawn])
