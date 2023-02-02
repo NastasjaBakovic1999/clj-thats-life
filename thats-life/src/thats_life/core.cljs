@@ -28,8 +28,14 @@
                          [pawn-render n]]))
               pawns)]))
 
+(defn player-pawn-render [n players]
+  (let [player-name (nth players n)]
+    [:div.player
+     (render-pawn n)
+     [:div.player-name player-name]]))
+
 (defn dice-render [dice-num]
-  (when dice-num [:dice.img {:srgamec (str "images/dice-" dice-num ".svg")}]))
+  (when dice-num [:dice.img {:src (str "images/dice-" dice-num ".svg")}]))
 
 (defn game-render []
   (let [state @game-state]

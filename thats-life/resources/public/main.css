@@ -1,0 +1,43 @@
+body {
+    background-color: #DDD;
+}
+input, h1, button, table .name {
+    font-family: "Dokdo";
+}
+h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 3em;
+    position: fixed;
+    width: 100%;
+}
+img.dice {
+    height: 2em;
+}
+div.path {
+    white-space: nowrap;
+    font-size: 10px;
+    text-align: center;
+}
+.pawns {
+    position: relative;
+    height: 18em;
+    margin: 0 auto;
+    width: 4em;
+}
+.pawns ol {
+    position: absolute;
+    bottom: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    width: 100%;
+}
+.pawns ol > li {
+    text-align: center;
+    width: 100%;
+}
+.pawns ol > li img {
+    height: 2em;
+}
