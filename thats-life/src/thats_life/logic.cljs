@@ -52,4 +52,23 @@
 (defn restart [game-state]
   (start {:players (get game-state :players)}))
 
-(defn move [state from pawn])
+(defn calculate-score [collect]
+ (let [pos (filter pos? collect)
+       neg (filter neg? collect)
+       zero (filter zero? collect)]
+    (reduce + 0
+      (concat pos 
+        (map * 
+           (sort (filter neg? collect))
+           (concat (repeat (count zero) -1) (repeat 1)))))))
+
+(defn scores [game-state]
+   (mapv calculate-score (get game-state :collect)))
+
+(defn move [game-state from pawn])
+
+(defn card-kind [n]
+  (cond
+    (pos? n) "potion"
+    (neg? n) "toxin"
+    (zero? n) "book"))
