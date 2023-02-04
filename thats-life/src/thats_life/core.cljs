@@ -17,16 +17,18 @@
 (defn pawn-render [n]
   [:pawn.img {:src (get pawn-imgs (inc n))}])
 
-(defn pawns-render [pawns up from]
+(defn pawns-render [pawns up from robot]
   (let [guards-move (get (set pawns) up)]
-    [:ol (map (fn [n] (let [mobile (or (= n up) (and guards-move (core/guard? n)))]
-                        [(symbol (str "li" (when mobile ".mobile")))
-                         (when mobile
-                           {:on-click
-                            (fn[e]
-                              (swap! game-state #(core/move % from n)))})
-                         [pawn-render n]]))
-              pawns)]))
+    [:ol (map 
+       (fn [n] 
+          (let [mobile (and (not bot) (or (= n up) (and guards-move (core/guard? n))))]
+             [(symbol (str "li" (when mobile ".mobile")))
+                 (when mobile
+                    {:on-click
+                       (fn[e]
+                          (swap! game-state #(core/move % from n)))})
+                 [pawn-render n]]))
+       pawns)]))
 
 (defn player-pawn-render [n players]
   (let [player-name (nth players n)]
@@ -36,6 +38,12 @@
 
 (defn dice-render [dice-num]
   (when dice-num [:dice.img {:src (str "images/dice-" dice-num ".svg")}]))
+
+(defn card-render [what value antitoxin]
+  (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
+    [(symbol (str "div.card." (clojure.string/join "." classes)))
+     [:card.img {:src (str "images/" classes ".svg")}]
+     [:value.div (or (when value (if antitoxin (* -1 value) value)))]]))
 
 (defn game-render []
   (let [state @game-state]

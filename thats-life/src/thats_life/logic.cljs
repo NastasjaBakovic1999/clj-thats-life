@@ -66,7 +66,7 @@
   (mapv calculate-score (get game-state :collect)))
 
 (defn moved-pawns [game-state]
-  (remove is-guard? (apply concat (get game-state :pawns))))\
+  (remove is-guard? (apply concat (get game-state :pawns))))
 
 (defn unmoved-pawns [game-state]
   (get game-state :start))
@@ -78,10 +78,13 @@
      (unmoved-pawns state)
      (moved-pawns game-state)))
 
-
-
 (defn card-kind [n]
   (cond
     (pos? n) "potion"
     (neg? n) "toxin"
     (zero? n) "book"))
+
+(def robots 
+  [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
+
+(defn )
