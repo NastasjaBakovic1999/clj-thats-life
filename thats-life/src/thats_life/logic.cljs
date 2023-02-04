@@ -33,7 +33,7 @@
    (concat 
     (repeat 8 nil)
     (repeat 8 guard)
-    (repeat nil))))
+    (repeat 16 nil))))
 
 (defn join-game [game-state player-name]
   (update game-state :players #(conj % player-name)))
@@ -63,9 +63,22 @@
            (concat (repeat (count zero) -1) (repeat 1)))))))
 
 (defn scores [game-state]
-   (mapv calculate-score (get game-state :collect)))
+  (mapv calculate-score (get game-state :collect)))
+
+(defn moved-pawns [game-state]
+  (remove is-guard? (apply concat (get game-state :pawns))))\
+
+(defn unmoved-pawns [game-state]
+  (get game-state :start))
 
 (defn move [game-state from pawn])
+
+(defn pawns-in-play [game-state]
+   (concat 
+     (unmoved-pawns state)
+     (moved-pawns game-state)))
+
+
 
 (defn card-kind [n]
   (cond

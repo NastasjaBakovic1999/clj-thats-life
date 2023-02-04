@@ -1,8 +1,12 @@
+@font-face {
+    font-family: "Dancing Script";
+    src: url("./DancingScript.ttf");
+  }
 body {
     background-color: #DDD;
 }
 input, h1, button, table .name {
-    font-family: "Dokdo";
+    font-family: "Dancing Script";
 }
 h1 {
     margin: 0;
