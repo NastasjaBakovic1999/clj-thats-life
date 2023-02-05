@@ -15,7 +15,7 @@
                 "images/pawn-yellow.svg" ])
 
 (defn pawn-render [n]
-  [:pawn.img {:src (get pawn-imgs (inc n))}])
+  [:img.pawn {:src (get pawn-imgs (inc n))}])
 
 (defn pawns-render [pawns up from robot]
   (let [guards-move (get (set pawns) up)]
@@ -37,13 +37,19 @@
      [:div.player-name player-name]]))
 
 (defn dice-render [dice-num]
-  (when dice-num [:dice.img {:src (str "images/dice-" dice-num ".svg")}]))
+  (when dice-num [:img.dice {:src (str "images/dice-" dice-num ".svg")}]))
 
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
     [(symbol (str "div.card." (clojure.string/join "." classes)))
-     [:card.img {:src (str "images/" classes ".svg")}]
-     [:value.div (or (when value (if antitoxin (* -1 value) value)))]]))
+     [:img.card {:src (str "images/" classes ".svg")}]
+     [:div.value (or (when value (if antitoxin (* -1 value) value)))]]))
+
+(defn space-render [what idx key value pawns up robot]
+  [:div.space ^{:key key}
+   {:data-key key :data-value value}
+   [:div.pawns (when (> count pawns) 8) {:class "crowd"}) [pawns-render pawns up idx robot]]
+   [card-render what value]])
 
 (defn game-render []
   (let [state @game-state]

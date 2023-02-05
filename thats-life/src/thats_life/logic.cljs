@@ -41,7 +41,7 @@
 (defn start-game [game-state]
   (let [num-of-players (count (get game-state :players))]
     (-> game-state
-        (assoc :start (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
+        (assoc :start-pawns (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
         (assoc :path init-path)
         (assoc :dice (roll-dice))
         (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
@@ -69,7 +69,7 @@
   (remove is-guard? (apply concat (get game-state :pawns))))
 
 (defn unmoved-pawns [game-state]
-  (get game-state :start))
+  (get game-state :start-pawns))
 
 (defn move [game-state from pawn])
 
@@ -86,5 +86,3 @@
 
 (def robots 
   [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
-
-(defn )
