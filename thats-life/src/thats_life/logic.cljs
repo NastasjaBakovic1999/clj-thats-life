@@ -71,12 +71,24 @@
 (defn unmoved-pawns [game-state]
   (get game-state :start-pawns))
 
+(defn game-started? [game-state]
+  (contains? game-state :start-pawns))
+
+(defn game-over? [game-state]
+  (and (game-started? game-state) (empty? (pawns-in-play game-state))))
+
 (defn move [game-state from pawn])
 
 (defn pawns-in-play [game-state]
    (concat 
-     (unmoved-pawns state)
+     (unmoved-pawns game-state)
      (moved-pawns game-state)))
+
+(defn playing [game-state]
+   (-> game-state 
+       pawns-in-play 
+       distinct
+       sort))
 
 (defn card-kind [n]
   (cond
@@ -95,3 +107,16 @@
 
 (def robots 
   [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
+
+(defn activated-robot [game-state]
+  (when (and (game-started? game-state) (not (game-over? game-state))) 
+    (let [{:keys [players up]} game-state
+          robot-name (nth player up)]
+      (->> robots
+           (filter 
+            (fn [[match algorithm]]
+              (match robot-name)))
+           (map
+            (fn [[_ algorithm]]
+              algorithm))
+           first))))

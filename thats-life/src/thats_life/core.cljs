@@ -95,6 +95,14 @@
     [:div 
      [:h1 "That's life"]]))
 
+(defn sleep [func ms]
+  (js/setTimeout func ms))
+
+(add-watch game-state :robots
+           (fn [key ref old-state new-state]
+             (when-let [robot (logic/activated-robot game-state)]
+               (sleep #(swap! game-state robot) 3000))))
+
 ;;The onbeforeunload event occurs when a document is about to be unloaded.
 (aset js/window "onbeforeunload" 
       (constantly "Do you really want to leave the game unfinished? Then you must lose!"))
