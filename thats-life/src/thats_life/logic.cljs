@@ -84,5 +84,14 @@
     (neg? n) "toxin"
     (zero? n) "book"))
 
+(defn use-antitoxin
+  ([collect antitoxins]
+   (let [worst-toxin (first (sort (filter neg? collect)))]
+     (if (and worst-toxin (pos? antitoxins))
+       (use-antitoxin (assoc collect (.indexOf collect worst-toxin) (* -1 worst-toxin)) (dec antitoxins))
+       collect )))
+  ([collect]
+   (use-antitoxin collect (count (filter #(= 0 %) collect)))))
+
 (def robots 
   [(partial re-find (re-pattern "(^Robot-.+)")) random-move])

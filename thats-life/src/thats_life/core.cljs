@@ -51,6 +51,22 @@
    [:div.pawns (when (> count pawns) 8) {:class "crowd"}) [pawns-render pawns up idx robot]]
    [card-render what value]])
 
+(defn players-render [players up dice collect]
+  [:table.players>tbody
+   (map-indexed
+    (fn [idx player-name]
+      (let [collect (nth collect idx)
+            antitoxin (logic/use-antitoxin collect)]
+        [:tr 
+         [:td.player-name player-name]
+         [:td.pawn (pawn-render idx)]
+         [:td.dice (when (= idx up) (dice-render dice))]
+         [:td.scores (logic/calculate-score (get collect idx))]
+         [:td.collect
+          (map-indexed
+           (fn [idx value]
+             (card-render nil value (not= (nth antitoxin idx) value))))]])))])
+
 (defn game-render []
   (let [state @game-state]
     [:div 
