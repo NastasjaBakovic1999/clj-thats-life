@@ -105,13 +105,21 @@
   ([collect]
    (use-antitoxin collect (count (filter #(= 0 %) collect)))))
 
+(defn winners [game-state]
+  (let [best-score (apply max (sort (scores game-state)))]
+    (remove nil?
+            (map-indexed
+             (fn [idx score]
+               (when (= best-score score) idx))
+             (scores game-state)))))
+
 (def robots 
   [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
 
 (defn activated-robot [game-state]
   (when (and (game-started? game-state) (not (game-over? game-state))) 
     (let [{:keys [players up]} game-state
-          robot-name (nth player up)]
+          robot-name (nth players up)]
       (->> robots
            (filter 
             (fn [[match algorithm]]
@@ -120,3 +128,38 @@
             (fn [[_ algorithm]]
               algorithm))
            first))))
+
+(defn game-render []
+  (let [game-state @game-state
+        robot (logic/activated-robot game-state)
+        {:keys [players start-pawns up dice path collect]} game-state]
+    [:div 
+     [:h1 "That's life"]
+     (when (not up) (player-entry-render (count players)))
+     (when (logic/game-over? game-state)
+       [:div.winners
+        [:h2 (if (= (count (logic/winners game-state)) 1) "Winner" "Winners")]
+        [:ul
+         (map
+          #(vector :li.player
+                   (pawn-render %)
+                   (vector :div.player-name (nth players %)))
+          (logic/winners game-state))]])
+     (apply vector :div.path
+            [space-render "start" -1 -1 nil start up robot]
+            (concat
+             (map-indexed
+              (fn [idx]
+                (vector space-render
+                        nil
+                        idx
+                        (get-in game-state [:idx idx])
+                        (get-in game-state [:path idx])
+                        (get-in game-state [:pawns idx])
+                        up
+                        robot))
+              path)
+             [[space-render "stop" 99 "stop" robot]]))
+     [:div.summary
+      [players-render players up dice collect]]
+     ]))
