@@ -91,9 +91,39 @@
    "Start"])
 
 (defn game-render []
-  (let [state @game-state]
+  (let [game-state @game-state
+        robot (logic/activated-robot game-state)
+        {:keys [players start-pawns up dice path collect]} game-state]
     [:div 
-     [:h1 "That's life"]]))
+     [:h1 "That's life"]
+     (when (not up) (player-entry-render (count players)))
+     (when (logic/game-over? game-state)
+       [:div.winners
+        [:h2 (if (= (count (logic/winners game-state)) 1) "Winner" "Winners")]
+        [:ul
+         (map
+          #(vector :li.player
+                   (pawn-render %)
+                   (vector :div.player-name (nth players %)))
+          (logic/winners game-state))]])
+     (apply vector :div.path
+            [space-render "start" -1 -1 nil start up robot]
+            (concat
+             (map-indexed
+              (fn [idx]
+                (vector space-render
+                        nil
+                        idx
+                        (get-in game-state [:idx idx])
+                        (get-in game-state [:path idx])
+                        (get-in game-state [:pawns idx])
+                        up
+                        robot))
+              path)
+             [[space-render "stop" 99 "stop" robot]]))
+     [:div.summary
+      [players-render players up dice collect]]
+     ]))
 
 (defn sleep [func ms]
   (js/setTimeout func ms))
