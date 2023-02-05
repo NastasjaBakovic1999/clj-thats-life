@@ -116,4 +116,16 @@ table.players {
     float: left;
     margin: 0 1em -1em 0;
   }
-
+  div.entry {
+    text-align: center;
+    padding-top: 4em;
+  }
+  div.entry input,
+  div.entry button {
+    font-size: 2em;
+    padding: .2em;
+    margin: .2em;
+  }
+  div.entry div {
+    display: inline-block;
+  }
