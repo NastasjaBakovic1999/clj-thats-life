@@ -45,3 +45,28 @@ div.path {
 .pawns ol > li img {
     height: 2em;
 }
+.pawns.crowded ol > li {
+    width: 20px;
+}
+img.card {
+    height: 5em;
+}
+.value {
+    margin-top: 5px;
+    width: 100%;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+}
+.toxin .value {
+    color: red;
+}
+.anti.toxin .value {
+    color: black;
+}
+.start .value,
+.stop .value,
+.book .value {
+  visibility: hidden;
+}
+
