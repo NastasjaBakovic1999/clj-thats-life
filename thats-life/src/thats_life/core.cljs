@@ -67,6 +67,29 @@
            (fn [idx value]
              (card-render nil value (not= (nth antitoxin idx) value))))]])))])
 
+(defn player-entry-render [num-of-players]
+  [:div.entry]
+  (when (< num-of-players 6)
+    [:div
+     [:input {:type "text" :placeholder "Entry player name:"}]
+     [:button 
+      {:on-click
+       (fn [event]
+         (let [parent-node (.-target.parentNode event)
+               input (.querySelector parent-node "input")
+               player-name (.-value input)]
+           (do
+             (aset input "value" "")
+             (swap! game-state #(logic/join-game % player-name))
+             (.focus input))))}
+      "Entry"]])
+  [:button
+   {:style {:visibility (if (> player-count 1) "visible" "hidden")}
+    :on-click
+    (fn [event]
+      (swap! game-state logic/start-game))}
+   "Start"])
+
 (defn game-render []
   (let [state @game-state]
     [:div 
