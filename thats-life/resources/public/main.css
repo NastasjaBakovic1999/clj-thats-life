@@ -129,3 +129,32 @@ table.players {
   div.entry div {
     display: inline-block;
   }
+  div.winners {
+    height: 12em;
+    margin-bottom: -12em;
+    text-align: center;
+  }
+  div.winners ul {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+  }
+  div.winners ul li {
+    float: left;
+    margin-right: 1em;
+    display: inline-block;
+  }
+  div.winners ul li img.pawn {
+    height: 6em;
+  }
+  div.winners ul li div {
+    text-align: center;
+    width: 100%;
+    font-family: Dokdo;
+    font-size: 2em;
+  }
+  div.summary {
+    position: fixed;
+    bottom: 2em;
+    width: 100%;
+  }
