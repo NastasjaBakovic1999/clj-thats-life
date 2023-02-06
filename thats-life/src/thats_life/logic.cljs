@@ -86,6 +86,13 @@
 (defn unconj [game-state player]
   (vec (remove-once (partial = player) game-state)))
 
+(defn order [game-state]
+  (->>
+   (map vector (scores game-state) (get game-state :players))
+   (sort-by first)
+   reverse
+   vec))
+
 (defn trim [game-state]
   (if (empty? (get game-state :start-pawns))
     (let [n (count (take-while empty? (map #(remove guard? %) (get game-state :pawns))))]
@@ -95,6 +102,18 @@
           (update :pawns #(vec (drop n %)))))
     game-state))
 
+(defn next-up [game-state]
+  (let [player (get game-state :up)
+        players (set (playing game-state))
+        turns (take 6 (filter players (cycle (range (count (get game-state :players))))))]
+    (if (game-over? game-state)
+      (-> game-state
+          (assoc :order (order game-state))
+          (dissoc :up :dice))
+      (-> game-state
+          (assoc :up (second (concat (drop-while #(not= player %) turns) turns)))
+          (assoc :dice (roll-dice))))))
+
 (defn insert [game-state]
   (let [player (up game-state)]
     (if ((set (unmoved-pawns game-state)) player)
@@ -102,6 +121,52 @@
           (update :start-pawns #(unconj % player))
           (update-in [:pawns (- (get game-state :dice) 1)] #(conj % player))
           trim
+          next-up)
+      game-state)))
+
+(defn drop-at [from x]
+  (let [[y z] (split-at from x)]
+    (vec (concat y (rest z)))))
+
+(defn collect [game-state from]
+  (let [player (up game-state)
+        take #(drop-at from %)]
+    (if (empty? (get-in game-state [:pawns from]))
+      (-> game-state
+          (update-in [:collected player] #(conj % (nth (get game-state :path) from)))
+          (update :ids take)
+          (update :path take)
+          (update :pawns take))
+      state)))
+
+(defn has? [player pawns]
+  (some #{player} pawns))
+
+(defn is-exited? [game-state to]
+  (not (contains? (get game-state :path) to)))
+
+(defn take-pawn [game-state from pawn]
+  (update-in game-state [:pawns from] #(unconj % pawn)))
+
+(defn put-pawn [game-state to pawn]
+  (if? (is-exited? game-state to)
+    game-state
+    (update-in game-state [:pawns to] #(conj % pawn))))
+
+(defn move-pawn [game-state from to pawn]
+  (-> game-state
+      (take-pawn from pawn)
+      (put-pawn to pawn)))
+
+(defn continue [game-state from pawn]
+  (let [player (up game-state)
+        pawns (get-in game-state [:pawns from])
+        to (+ from (get state :dice))]
+    (if (and (has? player pawns) (or (= player pawn) (is-guard? pawn)))
+      (-> game-state
+          (move-pawn from to pawn)
+          (collect from)
+          trim 
           next-up)
       game-state)))
 
