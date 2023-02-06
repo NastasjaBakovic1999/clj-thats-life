@@ -1,4 +1,4 @@
-(ns thats-life.logic)
+(ns thats_life.logic)
 
 (def init-players
   {:players []})
@@ -25,8 +25,7 @@
 (defn initial-pawns [num-of-players]
   (nth [3 3 3 3 2 2] (- num-of-players 2)))
 
-;;maybe it can be more meaningful
-(defn setup-fields [path]
+(defn setup-pawns [path]
   (mapv
     #(vec (remove nil? (conj %1 %2)))
    (repeat (count path) nil)
@@ -45,7 +44,7 @@
         (assoc :path init-path)
         (assoc :dice (roll-dice))
         (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
-        (assoc :fields (setup-fields init-path))
+        (assoc :pawns (setup-pawns init-path))
         (assoc :collect (vec (repeat num-of-players [])))
         (assoc :up (rand-int num-of-players)))))
 
@@ -77,7 +76,39 @@
 (defn game-over? [game-state]
   (and (game-started? game-state) (empty? (pawns-in-play game-state))))
 
-(defn move [game-state from pawn])
+(defn up [game-state]
+   (get game-state :up))
+
+(defn remove-once [predicate game-state]
+  (let [[x y] (split-with (complement predicate) game-state)]
+    (concat x (rest y))))
+
+(defn unconj [game-state player]
+  (vec (remove-once (partial = player) game-state)))
+
+(defn trim [game-state]
+  (if (empty? (get game-state :start-pawns))
+    (let [n (count (take-while empty? (map #(remove guard? %) (get game-state :pawns))))]
+      (-> game-state
+          (update :ids #(vec (drop n %)))
+          (update :path #(vec (drop n %)))
+          (update :pawns #(vec (drop n %)))))
+    game-state))
+
+(defn insert [game-state]
+  (let [player (up game-state)]
+    (if ((set (unmoved-pawns game-state)) player)
+      (-> game-state
+          (update :start-pawns #(unconj % player))
+          (update-in [:pawns (- (get game-state :dice) 1)] #(conj % player))
+          trim
+          next-up)
+      game-state)))
+
+(defn move [game-state from pawn]
+  (if (= -1 from)
+    (insert game-state)
+    (continue game-state from pawn)))
 
 (defn pawns-in-play [game-state]
    (concat 

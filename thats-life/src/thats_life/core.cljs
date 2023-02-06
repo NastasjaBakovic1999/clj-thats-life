@@ -1,6 +1,6 @@
-(ns thats-life.core
+(ns thats_life.core
   (:require [reagent.core :as core]
-            [thats-life.logic :as logic]))
+            [thats_life.logic :as logic]))
 
 (defonce game-state
   (reagent/atom core/init-players :validator core/is-valid?))
