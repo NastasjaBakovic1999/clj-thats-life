@@ -20,7 +20,7 @@
 (def is-guard? (partial = guard))
 
 (defn roll-dice
-  (inc (rand-int 6)))
+  #(inc (rand-int 6)))
 
 (defn initial-pawns [num-of-players]
   (nth [3 3 3 3 2 2] (- num-of-players 2)))
@@ -37,20 +37,6 @@
 (defn join-game [game-state player-name]
   (update game-state :players #(conj % player-name)))
 
-(defn start-game [game-state]
-  (let [num-of-players (count (get game-state :players))]
-    (-> game-state
-        (assoc :start-pawns (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
-        (assoc :path init-path)
-        (assoc :dice (roll-dice))
-        (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
-        (assoc :pawns (setup-pawns init-path))
-        (assoc :collect (vec (repeat num-of-players [])))
-        (assoc :up (rand-int num-of-players)))))
-
-(defn restart [game-state]
-  (start {:players (get game-state :players)}))
-
 (defn calculate-score [collect]
  (let [pos (filter pos? collect)
        neg (filter neg? collect)
@@ -65,7 +51,7 @@
   (mapv calculate-score (get game-state :collect)))
 
 (defn moved-pawns [game-state]
-  (remove is-guard? (apply concat (get game-state :pawns))))
+  (remove is-guard? (apply concat (get game-state :start-pawns))))
 
 (defn unmoved-pawns [game-state]
   (get game-state :start-pawns))
@@ -73,8 +59,30 @@
 (defn game-started? [game-state]
   (contains? game-state :start-pawns))
 
+(defn pawns-in-play [game-state]
+  (concat
+   (unmoved-pawns game-state)
+   (moved-pawns game-state)))
+
 (defn game-over? [game-state]
   (and (game-started? game-state) (empty? (pawns-in-play game-state))))
+
+(defn start-game [game-state]
+  (let [num-of-players (count (get game-state :players))]
+    (-> game-state
+        (assoc :start-pawns (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
+        (assoc :path init-path)
+        (assoc :dice (roll-dice))
+        (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
+        (assoc :pawns (setup-pawns init-path))
+        (assoc :collect (vec (repeat num-of-players [])))
+        (assoc :up (rand-int num-of-players)))))
+
+(defn playing [game-state]
+  (-> game-state 
+      pawns-in-play 
+      distinct
+      sort))
 
 (defn up [game-state]
    (get game-state :up))
@@ -95,7 +103,7 @@
 
 (defn trim [game-state]
   (if (empty? (get game-state :start-pawns))
-    (let [n (count (take-while empty? (map #(remove guard? %) (get game-state :pawns))))]
+    (let [n (count (take-while empty? (map #(remove is-guard? %) (get game-state :pawns))))]
       (-> game-state
           (update :ids #(vec (drop n %)))
           (update :path #(vec (drop n %)))
@@ -137,7 +145,7 @@
           (update :ids take)
           (update :path take)
           (update :pawns take))
-      state)))
+      game-state)))
 
 (defn has? [player pawns]
   (some #{player} pawns))
@@ -149,7 +157,7 @@
   (update-in game-state [:pawns from] #(unconj % pawn)))
 
 (defn put-pawn [game-state to pawn]
-  (if? (is-exited? game-state to)
+  (if (is-exited? game-state to)
     game-state
     (update-in game-state [:pawns to] #(conj % pawn))))
 
@@ -161,7 +169,7 @@
 (defn continue [game-state from pawn]
   (let [player (up game-state)
         pawns (get-in game-state [:pawns from])
-        to (+ from (get state :dice))]
+        to (+ from (get game-state :dice))]
     (if (and (has? player pawns) (or (= player pawn) (is-guard? pawn)))
       (-> game-state
           (move-pawn from to pawn)
@@ -174,17 +182,6 @@
   (if (= -1 from)
     (insert game-state)
     (continue game-state from pawn)))
-
-(defn pawns-in-play [game-state]
-   (concat 
-     (unmoved-pawns game-state)
-     (moved-pawns game-state)))
-
-(defn playing [game-state]
-   (-> game-state 
-       pawns-in-play 
-       distinct
-       sort))
 
 (defn card-kind [n]
   (cond
@@ -208,6 +205,36 @@
              (fn [idx score]
                (when (= best-score score) idx))
              (scores game-state)))))
+
+(defn moves
+  ([game-state pawn]
+   (filter #(= pawn (second %)) (moves game-state)))
+  ([game-state]
+   (let [player (up game-state)]
+     (distinct 
+      (concat
+       (->>
+        (get game-state :start-pawns)
+        (filter (partial = player))
+        (map (partial vector -1)))
+       (->> 
+        (get game-state :pawns)
+        (map-indexed 
+         (fn [idx pawns]
+           (map
+            #(vector idx %)
+            (filter
+             (fn [pawn]
+               (and (has? player pawns) (or (= player pawn) (is-guard? pawn))))
+             pawns))))
+        (apply concat)))))))
+
+(defn random-move [game-state]
+  (let [possible-moves (vec (moves game-state))
+        picked-move (rand-int (count possible-moves))]
+    (if (game-over? game-state)
+      game-state
+      (apply picked-move game-state (nth possible-moves picked-move)))))
 
 (def robots 
   [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
