@@ -19,7 +19,7 @@
 (def guard -1)
 (def is-guard? (partial = guard))
 
-(defn roll-dice
+(def roll-dice
   #(inc (rand-int 6)))
 
 (defn initial-pawns [num-of-players]
@@ -39,7 +39,6 @@
 
 (defn calculate-score [collect]
  (let [pos (filter pos? collect)
-       neg (filter neg? collect)
        zero (filter zero? collect)]
     (reduce + 0
       (concat pos 
@@ -245,7 +244,7 @@
           robot-name (nth players up)]
       (->> robots
            (filter 
-            (fn [[match algorithm]]
+            (fn [[match]]
               (match robot-name)))
            (map
             (fn [[_ algorithm]]

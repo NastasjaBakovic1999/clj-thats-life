@@ -1,9 +1,10 @@
 (ns thats_life.core
-  (:require [reagent.core :as core]
-            [thats_life.logic :as logic]))
+  (:require [reagent.core :as reagent]
+            [thats_life.logic :as logic]
+            [clojure.string :as string]))
 
 (defonce game-state
-  (reagent/atom core/init-players :validator core/is-valid?))
+  (reagent/atom logic/init-players :validator logic/is-valid?))
 
 (def pawn-imgs [
                 "images/guard.svg"
@@ -21,34 +22,28 @@
   (let [guards-move (get (set pawns) up)]
     [:ol (map 
        (fn [n] 
-          (let [mobile (and (not bot) (or (= n up) (and guards-move (core/guard? n))))]
+          (let [mobile (and (not robot) (or (= n up) (and guards-move (logic/is-guard? n))))]
              [(symbol (str "li" (when mobile ".mobile")))
                  (when mobile
                     {:on-click
-                       (fn[e]
-                          (swap! game-state #(core/move % from n)))})
+                       (fn[]
+                          (swap! game-state #(logic/move % from n)))})
                  [pawn-render n]]))
        pawns)]))
-
-(defn player-pawn-render [n players]
-  (let [player-name (nth players n)]
-    [:div.player
-     (render-pawn n)
-     [:div.player-name player-name]]))
 
 (defn dice-render [dice-num]
   (when dice-num [:img.dice {:src (str "images/dice-" dice-num ".svg")}]))
 
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
-    [(symbol (str "div.card." (clojure.string/join "." classes)))
+    [(symbol (str "div.card." (string/join "." classes)))
      [:img.card {:src (str "images/" classes ".svg")}]
-     [:div.value (or (when value (if antitoxin (* -1 value) value)))]]))
+     [:div.value (or (when value (if antitoxin (* -1 value) value)) "")]]))
 
 (defn space-render [what idx key value pawns up robot]
   [:div.space ^{:key key}
    {:data-key key :data-value value}
-   [:div.pawns (when (> count pawns) 8) {:class "crowd"}) [pawns-render pawns up idx robot]]
+   [:div.pawns (when (> (count pawns)  8) {:class "crowd"})  [pawns-render pawns up idx robot]]
    [card-render what value]])
 
 (defn players-render [players up dice collect]
@@ -65,7 +60,9 @@
          [:td.collect
           (map-indexed
            (fn [idx value]
-             (card-render nil value (not= (nth antitoxin idx) value))))]])))])
+             (card-render nil value (not= (nth antitoxin idx) value)))
+           collect)]]))
+    players)])
 
 (defn player-entry-render [num-of-players]
   [:div.entry]
@@ -84,17 +81,17 @@
              (.focus input))))}
       "Entry"]])
   [:button
-   {:style {:visibility (if (> player-count 1) "visible" "hidden")}
+   {:style {:visibility (if (> num-of-players 1) "visible" "hidden")}
     :on-click
-    (fn [event]
+    (fn []
       (swap! game-state logic/start-game))}
    "Start"])
 
 (defn game-render []
   (let [game-state @game-state
-        robot (logic/activated-robot game-state)
+        robot   (logic/activated-robot game-state)
         {:keys [players start-pawns up dice path collect]} game-state]
-    [:div 
+    [:div
      [:h1 "That's life"]
      (when (not up) (player-entry-render (count players)))
      (when (logic/game-over? game-state)
@@ -107,14 +104,14 @@
                    (vector :div.player-name (nth players %)))
           (logic/winners game-state))]])
      (apply vector :div.path
-            [space-render "start" -1 -1 nil start up robot]
+            [space-render "start" -1 -1 nil start-pawns up robot]
             (concat
              (map-indexed
               (fn [idx]
                 (vector space-render
                         nil
                         idx
-                        (get-in game-state [:idx idx])
+                        (get-in game-state [:ids idx])
                         (get-in game-state [:path idx])
                         (get-in game-state [:pawns idx])
                         up
@@ -122,14 +119,14 @@
               path)
              [[space-render "stop" 99 "stop" robot]]))
      [:div.summary
-      [players-render players up dice collect]]
-     ]))
+      [players-render players up dice collect]]]))
+
 
 (defn sleep [func ms]
   (js/setTimeout func ms))
 
 (add-watch game-state :robots
-           (fn [key ref old-state new-state]
+           (fn []
              (when-let [robot (logic/activated-robot game-state)]
                (sleep #(swap! game-state robot) 3000))))
 
