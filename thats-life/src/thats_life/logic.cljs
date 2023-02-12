@@ -72,7 +72,7 @@
         (assoc :start-pawns (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
         (assoc :path init-path)
         (assoc :dice (roll-dice))
-        (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
+        (assoc :idx (vec (map-indexed (fn [idx _] idx) init-path)))
         (assoc :pawns (setup-pawns init-path))
         (assoc :collect (vec (repeat num-of-players [])))
         (assoc :up (rand-int num-of-players)))))

@@ -107,7 +107,7 @@
             [space-render "start" -1 -1 nil start-pawns up robot]
             (concat
              (map-indexed
-              (fn [idx]
+              (fn [idx _]
                 (vector space-render
                         nil
                         idx
