@@ -50,7 +50,7 @@
   (mapv calculate-score (get game-state :collect)))
 
 (defn moved-pawns [game-state]
-  (remove is-guard? (apply concat (get game-state :start-pawns))))
+  (remove is-guard? (apply concat (get game-state :pawns))))
 
 (defn unmoved-pawns [game-state]
   (get game-state :start-pawns))

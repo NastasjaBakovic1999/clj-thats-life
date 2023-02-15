@@ -27,7 +27,7 @@
               [(symbol (str "li" (when mobile ".mobile")))
                (when mobile
                  {:on-click
-                  (fn []
+                  (fn [event]
                     (swap! game-state #(logic/move % from n)))})
                [pawn-render n]]))
           pawns)]))
@@ -37,7 +37,7 @@
 
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
-    [(str "div.card." (string/join "." classes))
+    [(symbol (str "div.card." (string/join "." classes)))
      [:img.card {:src (str "images/" (string/join "." classes) ".png")}]
      [:div.value (or (when value (if antitoxin (* -1 value) value)) "")]]))
 
@@ -84,7 +84,7 @@
 [:button
  {:style {:visibility (if (> num-of-players 1) "visible" "hidden")}
   :on-click
-  (fn []
+  (fn [event]
     (swap! game-state logic/start-game))}
  "Start"]])
 
@@ -120,14 +120,15 @@
               path)
              [[space-render "stop" 99 "stop" robot]]))
      [:div.summary
-      [players-render players up dice collect]]]))
+      [players-render players up dice collect]]
+     ]))
 
 
 (defn sleep [func ms]
   (js/setTimeout func ms))
 
 (add-watch game-state :robots
-           (fn []
+           (fn [key ref old-state new-state]
              (when-let [robot (logic/activated-robot game-state)]
                (sleep #(swap! game-state robot) 3000))))
 
