@@ -32,7 +32,7 @@
    (concat
     (repeat 8 nil)
     (repeat 8 guard)
-    (repeat 16 nil))))
+    (repeat nil))))
 
 (defn join-game [game-state player-name]
   (update game-state :players #(conj % player-name)))
@@ -244,9 +244,10 @@
           robot-name (nth players up)]
       (->> robots
            (filter
-            (fn [[match]]
+            (fn [[match algorithm]]
               (match robot-name)))
            (map
             (fn [[_ algorithm]]
               algorithm))
            first))))
+

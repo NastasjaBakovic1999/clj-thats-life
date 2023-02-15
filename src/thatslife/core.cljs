@@ -37,8 +37,8 @@
 
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
-    [(symbol (str "div.card." (string/join "." classes)))
-     [:img.card {:src (str "images/" (string/join "." classes) ".png")}]
+    [(symbol (str "div.card." (clojure.string/join "." classes)))
+     [:img.card {:src (str "images/" (clojure.string.join "." classes) ".png")}]
      [:div.value (or (when value (if antitoxin (* -1 value) value)) "")]]))
 
 (defn space-render [what idx key value pawns up robot]
@@ -69,7 +69,7 @@
   [:div.entry
    (when (< num-of-players 6)
      [:div
-      [:input {:type "text" :placeholder "Entry player name"}]
+      [:input {:type "text" :placeholder "Enter player name"}]
       [:button
        {:on-click
         (fn [event]
