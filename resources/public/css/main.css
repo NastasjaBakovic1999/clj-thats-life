@@ -5,17 +5,17 @@
 body {
     background-color: #F2CD5C;
 }
-input, h1, button, table .name {
+input, h1, button, table .player-name {
     font-family: "Dancing Script";
 }
 h1 {
     margin: 0;
     text-align: center;
-    font-size: 4em;
+    font-size: 3em;
     position: fixed;
     width: 100%;
 }
-#game {
+#app {
     font-family: monospace;
 }
 img.dice {
@@ -53,7 +53,7 @@ div.path {
     float: left;
 }
 img.card {
-    height: 5em;
+    height: 7em;
 }
 .value {
     margin-top: 5px;
@@ -116,6 +116,9 @@ table.players {
     float: left;
     margin: 0 1em -1em 0;
   }
+  table.players td.pawn img.pawn {
+    height: 3em;
+  }
   div.entry {
     text-align: center;
     padding-top: 4em;
@@ -144,13 +147,13 @@ table.players {
     margin-right: 1em;
     display: inline-block;
   }
-  div.winners ul li img.pawn {
+  div.winners ul li {
     height: 6em;
   }
   div.winners ul li div {
     text-align: center;
     width: 100%;
-    font-family: Dokdo;
+    font-family: "Dancing Script";
     font-size: 2em;
   }
   div.summary {

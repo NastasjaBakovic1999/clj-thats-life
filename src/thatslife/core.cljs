@@ -8,13 +8,13 @@
 (defonce game-state
   (reagent/atom logic/init-players :validator logic/is-valid?))
 
-(def pawn-imgs ["resources/images/guard.png"
-                "resources/images/pawn-black.png"
-                "resources/images/pawn-blue.png"
-                "resources/images/pawn-green.png"
-                "resources/images/pawn-orange.png"
-                "resources/images/pawn-red.png"
-                "resources/images/pawn-yellow.png"])
+(def pawn-imgs ["images/guard.png"
+                "images/pawn-blue.png"
+                "images/pawn-green.png"
+                "images/pawn-orange.png"
+                "images/pawn-black.png"
+                "images/pawn-red.png"
+                "images/pawn-yellow.png"])
 
 (defn pawn-render [n]
   [:img.pawn {:src (get pawn-imgs (inc n))}])
@@ -38,7 +38,7 @@
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
     [(str "div.card." (string/join "." classes))
-     [:img.card {:src (str "resources/images/" classes ".png")}]
+     [:img.card {:src (str "images/" (string/join "." classes) ".png")}]
      [:div.value (or (when value (if antitoxin (* -1 value) value)) "")]]))
 
 (defn space-render [what idx key value pawns up robot]
@@ -66,27 +66,27 @@
     players)])
 
 (defn player-entry-render [num-of-players]
-  [:div.entry]
-  (when (< num-of-players 6)
-    [:div
-     [:input {:type "text" :placeholder "Entry player name:"}]
-     [:button
-      {:on-click
-       (fn [event]
-         (let [parent-node (.-target.parentNode event)
-               input (.querySelector parent-node "input")
-               player-name (.-value input)]
-           (do
-             (aset input "value" "")
-             (swap! game-state #(logic/join-game % player-name))
-             (.focus input))))}
-      "Entry"]])
-  [:button
-   {:style {:visibility (if (> num-of-players 1) "visible" "hidden")}
-    :on-click
-    (fn []
-      (swap! game-state logic/start-game))}
-   "Start"])
+  [:div.entry
+   (when (< num-of-players 6)
+     [:div
+      [:input {:type "text" :placeholder "Entry player name"}]
+      [:button
+       {:on-click
+        (fn [event]
+          (let [parent-node (.-target.parentNode event)
+                input (.querySelector parent-node "input")
+                player-name (.-value input)]
+            (do
+              (aset input "value" "")
+              (swap! game-state #(logic/join-game % player-name))
+              (.focus input))))}
+       "Entry"]])
+[:button
+ {:style {:visibility (if (> num-of-players 1) "visible" "hidden")}
+  :on-click
+  (fn []
+    (swap! game-state logic/start-game))}
+ "Start"]])
 
 (defn game-render []
   (let [game-state @game-state
