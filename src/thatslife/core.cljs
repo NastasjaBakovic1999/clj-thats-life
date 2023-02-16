@@ -37,8 +37,8 @@
 
 (defn card-render [what value antitoxin]
   (let [classes (filter some? [what (when antitoxin "anti") (logic/card-kind value)])]
-    [(symbol (str "div.card." (clojure.string/join "." classes)))
-     [:img.card {:src (str "images/" (clojure.string.join "." classes) ".png")}]
+    [(symbol (str "div.card." (clojure.string/join "-" classes)))
+     [:img.card {:src (str "images/" (clojure.string/join "." classes) ".png")}]
      [:div.value (or (when value (if antitoxin (* -1 value) value)) "")]]))
 
 (defn space-render [what idx key value pawns up robot]
@@ -94,10 +94,10 @@
         {:keys [players start-pawns up dice path collect]} game-state]
     [:div
      [:h1 "That's life"]
-     (when (not up) (player-entry-render (count players)))
+     (when (and (not (logic/game-over? game-state)) (not up)) (player-entry-render (count players)))
      (when (logic/game-over? game-state)
        [:div.winners
-        [:h2 (if (= (count (logic/winners game-state)) 1) "Winner" "Winners")]
+        [:h2 (if (= (count (logic/winners game-state)) 1) "Winner is:" "Winners are:")]
         [:ul
          (map
           #(vector :li.player

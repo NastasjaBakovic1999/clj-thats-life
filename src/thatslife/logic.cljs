@@ -184,9 +184,9 @@
 
 (defn card-kind [n]
   (cond
-    (pos? n) "anti.toxin"
+    (pos? n) "potion"
     (neg? n) "toxin"
-    (zero? n) "book"))
+    (zero? n) "cure"))
 
 (defn use-antitoxin
   ([collect antitoxins]
