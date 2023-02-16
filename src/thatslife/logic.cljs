@@ -72,7 +72,7 @@
         (assoc :start-pawns (vec (mapcat #(repeat (initial-pawns num-of-players) %) (range num-of-players))))
         (assoc :path init-path)
         (assoc :dice (roll-dice))
-        (assoc :idx (vec (map-indexed (fn [idx] idx) init-path)))
+        (assoc :ids (vec (map-indexed (fn [idx] idx) init-path)))
         (assoc :pawns (setup-pawns init-path))
         (assoc :collect (vec (repeat num-of-players [])))
         (assoc :up (rand-int num-of-players)))))
@@ -140,7 +140,7 @@
         take #(drop-at from %)]
     (if (empty? (get-in game-state [:pawns from]))
       (-> game-state
-          (update-in [:collected player] #(conj % (nth (get game-state :path) from)))
+          (update-in [:collect player] #(conj % (nth (get game-state :path) from)))
           (update :ids take)
           (update :path take)
           (update :pawns take))
@@ -184,7 +184,7 @@
 
 (defn card-kind [n]
   (cond
-    (pos? n) "potion"
+    (pos? n) "anti.toxin"
     (neg? n) "toxin"
     (zero? n) "book"))
 
@@ -233,10 +233,10 @@
         picked-move (rand-int (count possible-moves))]
     (if (game-over? game-state)
       game-state
-      (apply picked-move game-state (nth possible-moves picked-move)))))
+      (apply move game-state (nth possible-moves picked-move)))))
 
 (def robots
-  [(partial re-find (re-pattern "(^Robot-.+)")) random-move])
+  [[(partial re-find (re-pattern "(^Robot-.+)")) random-move]])
 
 (defn activated-robot [game-state]
   (when (and (game-started? game-state) (not (game-over? game-state)))

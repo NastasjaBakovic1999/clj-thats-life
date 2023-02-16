@@ -27,7 +27,7 @@
               [(symbol (str "li" (when mobile ".mobile")))
                (when mobile
                  {:on-click
-                  (fn [event]
+                  (fn [e]
                     (swap! game-state #(logic/move % from n)))})
                [pawn-render n]]))
           pawns)]))
@@ -43,7 +43,7 @@
 
 (defn space-render [what idx key value pawns up robot]
   [:div.space ^{:key key}
-   {:data-key key :data-value value}
+   {:data-key key :data-worth value}
    [:div.pawns (when (> (count pawns)  8) {:class "crowd"})  [pawns-render pawns up idx robot]]
    [card-render what value]])
 
@@ -51,8 +51,8 @@
   [:table.players>tbody
    (map-indexed
     (fn [idx player-name]
-      (let [collect (nth collect idx)
-            antitoxin (logic/use-antitoxin collect)]
+      (let [coll  (nth collect idx)
+            antitoxin (logic/use-antitoxin coll)]
         [:tr
          [:td.player-name player-name]
          [:td.pawn (pawn-render idx)]
@@ -62,7 +62,7 @@
           (map-indexed
            (fn [idx value]
              (card-render nil value (not= (nth antitoxin idx) value)))
-           collect)]]))
+           coll)]]))
     players)])
 
 (defn player-entry-render [num-of-players]
@@ -72,8 +72,8 @@
       [:input {:type "text" :placeholder "Enter player name"}]
       [:button
        {:on-click
-        (fn [event]
-          (let [parent-node (.-target.parentNode event)
+        (fn [e]
+          (let [parent-node (.-target.parentNode e)
                 input (.querySelector parent-node "input")
                 player-name (.-value input)]
             (do
@@ -84,7 +84,7 @@
 [:button
  {:style {:visibility (if (> num-of-players 1) "visible" "hidden")}
   :on-click
-  (fn [event]
+  (fn [e]
     (swap! game-state logic/start-game))}
  "Start"]])
 
@@ -129,7 +129,7 @@
 
 (add-watch game-state :robots
            (fn [key ref old-state new-state]
-             (when-let [robot (logic/activated-robot game-state)]
+             (when-let [robot (logic/activated-robot new-state)]
                (sleep #(swap! game-state robot) 3000))))
 
 ;;The onbeforeunload event occurs when a document is about to be unloaded.
