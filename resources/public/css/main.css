@@ -11,7 +11,7 @@ input, h1, button, table .player-name {
 h1 {
     margin: 0;
     text-align: center;
-    font-size: 3em;
+    font-size: 4em;
     position: fixed;
     width: 100%;
 }
@@ -23,7 +23,7 @@ img.dice {
 }
 div.path {
     white-space: nowrap;
-    font-size: 10px;
+    font-size: 9px;
     text-align: center;
 }
 .pawns {
@@ -53,24 +53,27 @@ div.path {
     float: left;
 }
 img.card {
-    height: 7em;
+    height: 5em;
 }
 .value {
     margin-top: 5px;
     width: 100%;
-    font-size: 1.2em;
+    font-size: 2em;
     font-weight: bold;
     text-align: center;
 }
 .toxin .value {
     color: red;
 }
-.anti.toxin .value {
-    color: black;
+.potion .value {
+    color: green;
+}
+.anti-toxin .value {
+  color: green;
 }
 .start .value,
 .stop .value,
-.book .value {
+.cure .value {
   visibility: hidden;
 }
 div.space {
@@ -110,18 +113,22 @@ table.players {
     font-size: 2em;
   }
   table.players td.collect {
-    font-size: .4em;
+    font-size: .5em;
   }
   table.players td.collect .card {
     float: left;
     margin: 0 1em -1em 0;
+  }
+  table.players td.collect .value {
+    float: left;
+    margin-right: -2em;
   }
   table.players td.pawn img.pawn {
     height: 3em;
   }
   div.entry {
     text-align: center;
-    padding-top: 4em;
+    padding-top: 6em;
   }
   div.entry input,
   div.entry button {
@@ -133,9 +140,14 @@ table.players {
     display: inline-block;
   }
   div.winners {
-    height: 12em;
-    margin-bottom: -12em;
+    height: 40em;
+    margin-bottom: -14em;
+    padding-top: 10em;
     text-align: center;
+  }
+  div.winners h2 {
+    font-family: "Dancing Script";
+    font-size: 2em;
   }
   div.winners ul {
     list-style: none;
@@ -147,8 +159,9 @@ table.players {
     margin-right: 1em;
     display: inline-block;
   }
-  div.winners ul li {
-    height: 6em;
+  div.winners ul li img{
+    margin-left: 5em;
+    height: 20em;
   }
   div.winners ul li div {
     text-align: center;
