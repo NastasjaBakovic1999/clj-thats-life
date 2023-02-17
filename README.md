@@ -53,7 +53,7 @@ When playing a move, a player can move any of his pawns, but not any guard. A gu
 
 When a pawn is moved from a route card and this route card is left unoccupied, the player must collect it. If the pawn was not on its own, the card stays where it is.
 
-In the application, next to each player are shown the cards that the player has collected until that moment, as well as the negative cards that have been turned into positive ones.
+In the application, next to each player are shown the cards that the player has collected until that moment.
 
 ![image](https://user-images.githubusercontent.com/56804110/219717485-d987e46d-9fd7-483d-b9ea-481c7e53abf4.png)
 
@@ -66,7 +66,19 @@ The player with the highest number of points is the winner.
 
 ![image](https://user-images.githubusercontent.com/56804110/219717846-cf6d440e-5e95-41b2-bbfb-b26ca663771f.png)
 
-Oh, it seems that man doesn't have much of a chance against artificial intelligence... :wink:
+Oh, it seems that human doesn't have a chance against a robot... :wink:
+
+## Robot
+
+When entering players, if the player's name starts with Robot-, the application will recognize that player as a robot. The robot's moves are played by a relatively simple function that first determines the robot's possible moves and then rendomly chooses one of them. So, the robot's moves are valid, but not always overly clever, so the above remark that a human has no chance against a robot is actually not always true. Adding some sophisticated artificial intelligence to Robot-Zika is my next step in further development.
+
+## Testing
+
+## Further development
+
+The first step of further development is certainly making robots smarter. My idea is that the function that determines the robot's move, in addition to looking at possible moves, also determines which moves would bring the highest number of points and develops some kind of tactics for the next few moves.
+
+In the official rules of this game, it is stated that, in addition to the basic, initial path of cards, for a more fun and dynamic game, there is also an option to mix the cards, so that the arrangement of positive, negative and luck cards is random. This would introduce changes in the logic of some of the application's functions, but would make the game richer, so the 'Shuffle card' button is also part of future development.
 
 ## Sources
 
