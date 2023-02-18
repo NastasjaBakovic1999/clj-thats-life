@@ -78,7 +78,7 @@ When entering players, if the player's name starts with Robot-, the application 
 
 The first step of further development is certainly making robots smarter. My idea is that the function that determines the robot's move, in addition to looking at possible moves, also determines which moves would bring the highest number of points and develops some kind of tactics for the next few moves.
 
-In the official rules of this game, it is stated that, in addition to the basic, initial path of cards, for a more fun and dynamic game, there is also an option to mix the cards, so that the arrangement of positive, negative and luck cards is random. This would introduce changes in the logic of some of the application's functions, but would make the game richer, so the 'Shuffle card' button is also part of future development.
+In the official rules of this game, it is stated that, in addition to the basic, initial path of cards, for a more fun and dynamic game, there is also an option to mix the cards, so that the arrangement of positive, negative and fortune cards is random. This would introduce changes in the logic of some of the application's functions, but would make the game richer, so the 'Shuffle card' button is also part of future development.
 
 ## Sources
 
