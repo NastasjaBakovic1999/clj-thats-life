@@ -73,6 +73,14 @@ Oh, it seems that human doesn't have a chance against a robot... :wink:
 When entering players, if the player's name starts with Robot-, the application will recognize that player as a robot. The robot's moves are played by a relatively simple function that first determines the robot's possible moves and then rendomly chooses one of them. So, the robot's moves are valid, but not always overly clever, so the above remark that a human has no chance against a robot is actually not always true. Adding some sophisticated artificial intelligence to Robot-Zika is my next step in further development.
 
 ## Testing
+ClojureScript now ships with a port of clojure.test in the form of cljs.test. It attempts to preserve most of the functionality provided by clojure.test along with enhancements for asynchronous testing in a single threaded environment. Most of the functionality is provided via macros as cljs.test relies on compiler reflection and static vars to provide most of its functionality.
+
+Only file logic was tested. In order to run the tests, we need to have executed the `lein figwheel` command first, then after the figwheel server starts and shows the prompt, we enter in the prompt
+```
+(require 'thatslife.test-runner)
+(thatslife.test-runner/run-all-tests)
+```
+and we see the test results.
 
 ## Further development
 
@@ -84,10 +92,11 @@ In the official rules of this game, it is stated that, in addition to the basic,
 
 [1] Higginbotham, D., 2015, Clojure for the Brave and True: Learn the Ultimate Language and Become a Better Programmer      
 [2] Sotnikov D., Brown S., 2021, Web Development with Clojure: Build Large, Maintainable Web Applications Interactively   
-[3] Reagent: Minimalistic React for ClojureScript (https://reagent-project.github.io/)   
-[4] Introduction to ClojureScript and Reagent, Decypher Media (https://www.youtube.com/watch?v=wq6ctyZBb0A)  
-[5] React without JavaScript: ClojureScript, Reagent, Figwheel (React Helsinki meetup, 23.10.2018), Codexpanse (https://www.youtube.com/watch?v=R07s6JpJICo)  
-[6] Thats Life! Board Game Review, Jeremy Reviews It (https://www.youtube.com/watch?v=nSEdCEaAznw)  
+[3] ClojureScript - Testing (https://clojurescript.org/tools/testing)   
+[4] Reagent: Minimalistic React for ClojureScript (https://reagent-project.github.io/)   
+[5] Introduction to ClojureScript and Reagent, Decypher Media (https://www.youtube.com/watch?v=wq6ctyZBb0A)  
+[6] React without JavaScript: ClojureScript, Reagent, Figwheel (React Helsinki meetup, 23.10.2018), Codexpanse (https://www.youtube.com/watch?v=R07s6JpJICo)  
+[7] Thats Life! Board Game Review, Jeremy Reviews It (https://www.youtube.com/watch?v=nSEdCEaAznw)  
 
 ## License
 
