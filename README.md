@@ -92,7 +92,7 @@ In the official rules of this game, it is stated that, in addition to the basic,
 
 [1] Higginbotham, D., 2015, Clojure for the Brave and True: Learn the Ultimate Language and Become a Better Programmer      
 [2] Sotnikov D., Brown S., 2021, Web Development with Clojure: Build Large, Maintainable Web Applications Interactively   
-[3] ClojureScript - Testing (https://clojurescript.org/tools/testing)
+[3] ClojureScript - Testing (https://clojurescript.org/tools/testing)   
 [4] Reagent: Minimalistic React for ClojureScript (https://reagent-project.github.io/)   
 [5] Introduction to ClojureScript and Reagent, Decypher Media (https://www.youtube.com/watch?v=wq6ctyZBb0A)  
 [6] React without JavaScript: ClojureScript, Reagent, Figwheel (React Helsinki meetup, 23.10.2018), Codexpanse (https://www.youtube.com/watch?v=R07s6JpJICo)  
