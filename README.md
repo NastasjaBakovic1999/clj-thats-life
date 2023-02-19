@@ -73,6 +73,14 @@ Oh, it seems that human doesn't have a chance against a robot... :wink:
 When entering players, if the player's name starts with Robot-, the application will recognize that player as a robot. The robot's moves are played by a relatively simple function that first determines the robot's possible moves and then rendomly chooses one of them. So, the robot's moves are valid, but not always overly clever, so the above remark that a human has no chance against a robot is actually not always true. Adding some sophisticated artificial intelligence to Robot-Zika is my next step in further development.
 
 ## Testing
+ClojureScript now ships with a port of clojure.test in the form of cljs.test. It attempts to preserve most of the functionality provided by clojure.test along with enhancements for asynchronous testing in a single threaded environment. Most of the functionality is provided via macros as cljs.test relies on compiler reflection and static vars to provide most of its functionality.
+
+Only file logic was tested. In order to run the tests, we need to have executed the `lein figwheel` command first, then after the figwheel server starts and shows the prompt, we enter in the prompt
+```
+(require 'thatslife.test-runner)
+(thatslife.test-runner/run-all-tests)
+```
+and we see the test results.
 
 ## Further development
 
