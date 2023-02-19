@@ -23,7 +23,7 @@
   #(inc (rand-int 6)))
 
 (defn initial-pawns [num-of-players]
-  (nth [3 3 3 3 2 2] (- num-of-players 2)))
+  (nth [3 3 3 2 2] (- num-of-players 2)))
 
 (defn setup-pawns [path]
   (mapv
