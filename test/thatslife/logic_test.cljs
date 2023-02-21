@@ -206,4 +206,98 @@
            :up 2}))
   )
 
+;; during this test, changes in the value of the :dice key 
+;; were not taken into consideration because it is a random value
+  (deftest next-up
+   ;; (is (= (logic/next-up  { :start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;                          :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;                          :up 0}) 
+   ;;        {:start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;         :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;          :dice 
+   ;;         :up 1})) 
+   ;; (is (= (logic/next-up  { :start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;                          :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;                          :up 1}) 
+   ;;        {:start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;         :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;         :up 2})) 
+   ;; (is (= (logic/next-up  { :start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;                          :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;                          :up 2}) 
+   ;;        {:start-pawns [0 0 0 1 1 1 2 2 2]
+   ;;          :players ["Nastasja" "Stefan" "Robot-Zika"]
+   ;;         :up 0})) 
+    (is (= (logic/next-up  { :start-pawns []
+                             :pawns []
+                             :players ["Nastasja" "Stefan" "Robot-Zika"]
+                             :up 2}) 
+           {:start-pawns []
+            :pawns []
+            :players ["Nastasja" "Stefan" "Robot-Zika"]
+            :order []})) 
+  )
+
+  ;; (deftest insert-test
+  ;; (is (= (logic/insert  {:start-pawns [0 0 0 1 1 1 2 2 2]
+	;;	                      :path [-1 -2 -3 -4 -5 -6 -7 -8
+	;;		                           0 0 0 0 0 0
+	;;		                           1 2 3 4 5 6 7 8
+	;;		                           -1 -2 -3 -4 -5 -6 -7 -8 -9 -10]
+	;;	                      :dice 1
+	;;	                      :idx [0 1 2 3 4 5 6 7 8 
+	;;		                          9 10 11 12 13 14 
+	;;		                          15 16 17 18 19 20 21 22
+	;;		                          23 24 25 26 27 28 29 30 31 32]
+	;;	                      :pawns [[][][][][][][][]
+	;;		                            [-1][-1][-1][-1][-1][-1]
+	;;		                            [][][][][][][][]
+	;;		                           [][][][][][][][][][]]
+	;;	                      :collect [[][][]]
+	;;	                      :up 1}) 
+  ;;         {:start-pawns [0 0 0 1 1 2 2 2]
+  ;;         :path [-1 -2 -3 -4 -5 -6 -7 -8
+  ;;                0 0 0 0 0 0 
+  ;;                 1 2 3 4 5 6 7 8
+  ;;                  -1 -2 -3 -4 -5 -6 -7 -8 -9 -10]
+  ;;           :dice 1
+  ;;           :idx [0 1 2 3 4 5 6 7 8
+  ;;                 9 10 11 12 13 14 
+  ;;                 15 16 17 18 19 20 21 22 
+  ;;                 23 24 25 26 27 28 29 30 31 32]
+  ;;           :pawns [[1] [] [] [] [] [] [] []
+  ;;                  [-1] [-1] [-1] [-1] [-1] [-1] 
+  ;;                  [] [] [] [] [] [] [] [] [] [] 
+  ;;                  [] [] [] [] [] [] [] []]
+  ;;           :collect [[] [] []]
+  ;;           :up nil})) 
+  ;; )
+
+(deftest drop-at-test 
+  (is (= (logic/drop-at 3 [0 1 2 3 4 5 6 7 8 
+			                        9 10 11 12 13 14 
+			                        15 16 17 18 19 20 21 22
+			                        23 24 25 26 27 28 29 30 31 32]) 
+         [0 1 2 4 5 6 7 8 
+         9 10 11 12 13 14 
+         15 16 17 18 19 20 21 22 
+         23 24 25 26 27 28 29 30 31 32]))
+  (is (= (logic/drop-at 3 [-1 -2 -3 -4 -5 -6 -7 -8
+			                      0 0 0 0 0 0
+			                      1 2 3 4 5 6 7 8
+			                     -1 -2 -3 -4 -5 -6 -7 -8 -9 -10]) 
+        [-1 -2 -3 -5 -6 -7 -8
+			    0 0 0 0 0 0
+			    1 2 3 4 5 6 7 8
+			   -1 -2 -3 -4 -5 -6 -7 -8 -9 -10]))
+  (is (= (logic/drop-at 3  [[][][2][1][][][][]
+			                      [-1][-1][-1][-1][-1][-1]
+			                      [][][][2][][][][]
+			                      [][][][1][1][][][][][]]) 
+       [[][][2][][][][]
+			  [-1][-1][-1][-1][-1][-1]
+			  [][][][2][][][][]
+			  [][][][1][1][][][][][]]))
+)
+
 
